@@ -1,0 +1,32 @@
+{
+  "name": "globe-mapper",
+  "version": "0.0.1",
+  "description": "mapping tool for spherical grid maps",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dfriedenbach/globe-mapper.git"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/dfriedenbach/globe-mapper/issues"
+  },
+  "homepage": "https://github.com/dfriedenbach/globe-mapper#readme",
+  "dependencies": {
+    "html-webpack-plugin": "^2.30.1",
+    "path": "^0.12.7",
+    "three": "^0.90.0",
+    "webpack": "^3.11.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "webpack-dev-server": "^2.11.1"
+  }
+}
