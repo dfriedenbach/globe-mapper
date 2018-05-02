@@ -1,14 +1,16 @@
 const THREE = require('three');
+const OrbitControls =require('./OrbitControls');
 
 const container = document.getElementById('container');
 
 let renderer = null;
 let camera = null;
+let cameraControls = null;
 let scene = null;
 const clock = new THREE.Clock();
 
 init();
-render();
+animate();
 
 function init() {
   const canvasWidth = 1200;
@@ -22,7 +24,9 @@ function init() {
   container.appendChild(renderer.domElement);
 
   camera = new THREE.PerspectiveCamera(75, canvasRatio, 0.1, 1000);
+  camera.up.set(0, 0, 1);
   camera.position.set(0, 0, 500)
+  cameraControls = new OrbitControls(camera, renderer.domElement);
 }
 
 function fillScene() {
@@ -34,7 +38,6 @@ function fillScene() {
   scene.add(ambientLight);
   scene.add(light);
   const geometry = icosahedronGeometry(100);
-  // const geometry = new THREE.IcosahedronGeometry(100);
   const material = new THREE.MeshLambertMaterial({ color: 0x2914CE, flatShading: true });
   const mesh = new THREE.Mesh(geometry, material);
   scene.add(mesh);
@@ -42,11 +45,21 @@ function fillScene() {
 
 function render() {
   fillScene();
+  cameraControls && cameraControls.update();
   renderer.render(scene, camera)
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  render();
 }
 
 function degreesToRadians(degrees) {
   return degrees * Math.PI / 180;
+}
+
+function radiansToDegrees(radians) {
+  return radians * 180 / Math.PI;
 }
 
 function vectorSpherical(lat, long, r) {
@@ -60,18 +73,19 @@ function vectorSpherical(lat, long, r) {
 
 function icosahedronGeometry(r) {
   const geometry = new THREE.Geometry();
+  const latitude = radiansToDegrees(Math.atan(0.5));
   geometry.vertices.push(
     vectorSpherical(90, 0, r),
-    vectorSpherical(Math.atan(0.5), 0, r),
-    vectorSpherical(Math.atan(0.5), 72, r),
-    vectorSpherical(Math.atan(0.5), 144, r),
-    vectorSpherical(Math.atan(0.5), 216, r),
-    vectorSpherical(Math.atan(0.5), 288, r),
-    vectorSpherical(-Math.atan(0.5), 36, r),
-    vectorSpherical(-Math.atan(0.5), 108, r),
-    vectorSpherical(-Math.atan(0.5), 180, r),
-    vectorSpherical(-Math.atan(0.5), 252, r),
-    vectorSpherical(-Math.atan(0.5), 324, r),
+    vectorSpherical(latitude, 0, r),
+    vectorSpherical(latitude, 72, r),
+    vectorSpherical(latitude, 144, r),
+    vectorSpherical(latitude, 216, r),
+    vectorSpherical(latitude, 288, r),
+    vectorSpherical(-latitude, 36, r),
+    vectorSpherical(-latitude, 108, r),
+    vectorSpherical(-latitude, 180, r),
+    vectorSpherical(-latitude, 252, r),
+    vectorSpherical(-latitude, 324, r),
     vectorSpherical(-90, 0, r)
   );
   for (let i = 0; i < 4; i++) {
@@ -87,8 +101,8 @@ function icosahedronGeometry(r) {
     geometry.faces.push(new THREE.Face3(i, i + 4, i + 5));
   }
   for (let i = 6; i < 10; i++) {
-    geometry.faces.push(new THREE.Face3(0, i + 1, i));
+    geometry.faces.push(new THREE.Face3(11, i + 1, i));
   }
-  geometry.faces.push(new THREE.Face3(0, 6, 10));
+  geometry.faces.push(new THREE.Face3(11, 6, 10));
   return geometry;
 }
